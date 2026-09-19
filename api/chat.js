@@ -4,10 +4,12 @@ export default async function handler(req, res) {
   }
 
   const { messages } = req.body;
+  
+  // Handled securely in Vercel Environment Variables
   const apiKey = process.env.BOTLIY_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json({ error: 'BOTLIY_API_KEY environment variable is not set.' });
+    return res.status(500).json({ error: 'API key is missing from environment.' });
   }
 
   try {
@@ -26,6 +28,6 @@ export default async function handler(req, res) {
     const data = await response.json();
     return res.status(response.status).json(data);
   } catch (error) {
-    return res.status(500).json({ error: error.message || 'Internal Server Error' });
+    return res.status(500).json({ error: error.message });
   }
 }
