@@ -1,0 +1,70 @@
+/* Ambient Background & Grid Overlay */
+body.light-theme {
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(circle at 50% 10%, rgba(191, 219, 254, 0.6) 0%, rgba(248, 250, 252, 0) 60%),
+    linear-gradient(to right, rgba(226, 232, 240, 0.4) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(226, 232, 240, 0.4) 1px, transparent 1px);
+  background-size: 100% 100%, 40px 40px, 40px 40px;
+  background-attachment: fixed;
+}
+
+body.dark-theme {
+  background-color: #121214;
+  color: #e3e3e3;
+}
+
+/* Header Shrink Transition */
+#main-header {
+  transition: padding 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#main-header.shrunk {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+/* Code Snippet Container */
+.code-block-wrapper {
+  background-color: #1e1e22;
+  border: 1px solid #2e2f38;
+  border-radius: 0.75rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #161618;
+  border-bottom: 1px solid #2e2f38;
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: #a1a1aa;
+}
+
+.code-content {
+  padding: 1rem;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875rem;
+  color: #e4e4e7;
+  line-height: 1.6;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}

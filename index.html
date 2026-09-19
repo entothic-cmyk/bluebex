@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bluebex AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="light-theme text-gray-800 h-screen flex flex-col font-sans overflow-hidden">
+
+  <!-- Header -->
+  <header id="main-header" class="flex items-center justify-between px-8 py-6 fixed top-0 w-full z-50">
+    <div class="flex items-center gap-2">
+      <img src="logo.png" alt="Bluebex Logo" class="h-6 w-auto" onerror="this.style.display='none'">
+      <span class="font-bold text-xl text-[#3b82f6] tracking-tight">bluebex</span>
+    </div>
+    <div class="flex items-center gap-4 text-sm font-medium">
+      <a href="#" class="text-gray-600 hover:text-black">Get App</a>
+      <div class="flex bg-gray-200/60 p-0.5 rounded-full border border-gray-200">
+        <button class="px-3 py-0.5 rounded-full text-xs text-gray-500 hover:text-black">中文</button>
+        <button class="px-3 py-0.5 rounded-full text-xs bg-white shadow-sm font-semibold text-black">EN</button>
+      </div>
+      <a href="login.html" class="ml-2 text-blue-600 hover:underline">Log in</a>
+    </div>
+  </header>
+
+  <!-- Chat & Hero Area -->
+  <main class="flex-1 overflow-y-auto px-4 pt-28 pb-40" id="chat-container">
+    <div class="max-w-3xl mx-auto space-y-8" id="messages">
+      
+      <!-- Landing Hero Screen -->
+      <div id="welcome-screen" class="flex flex-col items-center justify-center min-h-[55vh] text-center space-y-6">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 border border-blue-100 shadow-sm text-xs text-gray-600 max-w-xl">
+          <span class="text-blue-500">✨</span>
+          <p class="truncate">The official version of Bluebex V1.1 Flash has been released, featuring comprehensive improvements in coding and reasoning.</p>
+        </div>
+
+        <h1 class="text-5xl font-normal text-gray-800 tracking-tight">
+          Into the Unknown
+        </h1>
+
+        <!-- Search Input Box -->
+        <div class="w-full bg-white/90 backdrop-blur-xl border border-gray-200/80 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] p-3 transition-all focus-within:ring-2 focus-within:ring-blue-400/30">
+          <form id="chat-form" class="flex flex-col gap-3">
+            
+            <input type="file" id="file-upload" class="hidden" accept=".txt,.js,.py,.html,.css,.json,.md,.cpp,.c">
+            
+            <textarea
+              id="user-input"
+              rows="2"
+              placeholder="Ask anything, explore together"
+              class="w-full bg-transparent border-none outline-none text-gray-800 placeholder-gray-400 px-3 pt-1 text-base resize-none"
+              required
+            ></textarea>
+            
+            <div class="flex items-center justify-between px-1">
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="document.getElementById('file-upload').click()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 transition">
+                  <i data-lucide="paperclip" class="w-3.5 h-3.5"></i> Attach
+                </button>
+                <button type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 transition">
+                  <i data-lucide="brain" class="w-3.5 h-3.5"></i> DeepThink
+                </button>
+                <button type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 transition">
+                  <i data-lucide="globe" class="w-3.5 h-3.5"></i> Search
+                </button>
+              </div>
+              <button type="submit" class="p-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition shadow-md">
+                <i data-lucide="arrow-up" class="w-4 h-4 stroke-[3]"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Action Links -->
+        <div class="flex gap-4 pt-2">
+          <button class="flex items-center gap-2 px-5 py-2 rounded-full border border-gray-200 bg-white/80 text-sm font-medium hover:bg-white shadow-sm">
+            <i data-lucide="message-square" class="w-4 h-4 text-blue-600"></i> Chat with Bluebex
+          </button>
+          <button class="flex items-center gap-2 px-5 py-2 rounded-full border border-gray-200 bg-white/80 text-sm font-medium hover:bg-white shadow-sm">
+            <i data-lucide="code" class="w-4 h-4 text-gray-600"></i> Use API Platform
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- DeepSeek Grid Footer -->
+    <footer id="main-footer" class="max-w-4xl mx-auto w-full grid grid-cols-5 gap-8 mt-28 pt-10 border-t border-gray-200/60 text-xs text-gray-500 pb-12">
+      <div class="col-span-1 space-y-3">
+        <span class="font-bold text-lg text-blue-600">bluebex</span>
+        <p class="leading-relaxed">Bluebex Pvt Ltd<br>Kochi, Kerala</p>
+        <div class="flex gap-3 pt-1">
+          <i data-lucide="github" class="w-4 h-4 cursor-pointer hover:text-black"></i>
+          <i data-lucide="twitter" class="w-4 h-4 cursor-pointer hover:text-black"></i>
+          <i data-lucide="mail" class="w-4 h-4 cursor-pointer hover:text-black"></i>
+        </div>
+      </div>
+      <div class="flex flex-col gap-2.5">
+        <span class="font-semibold text-gray-800 text-sm mb-1">Products</span>
+        <a href="#" class="hover:text-black">Bluebex Web</a>
+        <a href="#" class="hover:text-black">Bluebex App</a>
+        <a href="#" class="hover:text-black">API Platform</a>
+      </div>
+      <div class="flex flex-col gap-2.5">
+        <span class="font-semibold text-gray-800 text-sm mb-1">Research</span>
+        <a href="#" class="hover:text-black">Bluebex V1.1</a>
+        <a href="#" class="hover:text-black">Bluebex R1</a>
+      </div>
+      <div class="flex flex-col gap-2.5">
+        <span class="font-semibold text-gray-800 text-sm mb-1">Legal & Security</span>
+        <a href="#" class="hover:text-black">Privacy Policy</a>
+        <a href="#" class="hover:text-black">Terms of Use</a>
+      </div>
+      <div class="flex flex-col gap-2.5">
+        <span class="font-semibold text-gray-800 text-sm mb-1">Join Us</span>
+        <a href="#" class="hover:text-black">Careers</a>
+      </div>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
