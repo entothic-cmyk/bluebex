@@ -3,256 +3,359 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bluebex AI</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563eb'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
-  
-  <!-- Dependencies -->
+  <title>BlueBex AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background-color: #f4f7fb;
-      background-image: 
-        radial-gradient(circle at 50% 25%, rgba(219, 234, 254, 0.65) 0%, rgba(244, 247, 251, 0) 60%),
-        radial-gradient(#e2e8f0 1.2px, transparent 1.2px);
-      background-size: 100% 100%, 28px 28px;
-      background-attachment: fixed;
-    }
-
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
-
-    textarea { outline: none !important; box-shadow: none !important; }
-
-    .prose p { margin-bottom: 0.5rem; }
-    .prose p:last-child { margin-bottom: 0; }
-    .prose pre {
-      background-color: #0f172a;
-      border-radius: 0.75rem;
-      padding: 0.75rem 1rem;
-      color: #f8fafc;
-      font-size: 0.85rem;
-      overflow-x: auto;
-      margin: 0.5rem 0;
-    }
-    .prose code {
-      color: #1e40af;
-      background-color: #eff6ff;
-      padding: 0.15rem 0.3rem;
-      border-radius: 0.375rem;
-      font-size: 0.85em;
-    }
-    .prose pre code { color: inherit; background: transparent; padding: 0; }
+    body { background-color: #18181b; color: #f4f4f5; font-family: system-ui, -apple-system, sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
   </style>
 </head>
-<body class="text-gray-800 h-screen flex flex-col overflow-hidden">
+<body class="h-screen flex flex-col overflow-hidden">
 
-  <!-- Header with Big Logo -->
-  <header class="fixed top-0 left-0 right-0 w-full px-8 py-5 flex items-center justify-between z-50 bg-transparent">
-    <div class="flex items-center gap-3 cursor-pointer" onclick="location.reload()">
-      <div class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-md">
-        B
+  <!-- ================= 1. HOME VIEW ================= -->
+  <div id="home-view" class="flex flex-col h-full w-full bg-gradient-to-b from-[#1a1d29] via-[#18181b] to-[#0f0f11]">
+    <!-- Navbar -->
+    <header class="flex items-center justify-between px-6 py-4 border-b border-zinc-800/60">
+      <div class="flex items-center gap-3">
+        <img src="logo.png" onerror="this.src='https://placehold.co/40x40/3b82f6/ffffff?text=BX'" class="w-9 h-9 rounded-lg" alt="Logo">
+        <span class="font-bold text-xl text-white">BlueBex AI</span>
       </div>
-      <span class="font-extrabold text-2xl text-blue-600 tracking-tight">bluebex</span>
-    </div>
-
-    <div class="flex items-center gap-3 text-xs font-semibold text-gray-600">
-      <div class="flex bg-gray-200/60 p-0.5 rounded-full">
-        <button class="px-3 py-1 rounded-full text-gray-500">中文</button>
-        <button class="px-3 py-1 rounded-full bg-white shadow-xs text-black">EN</button>
+      <div class="flex items-center gap-3">
+        <button onclick="switchView('auth', 'signin')" class="px-4 py-2 text-sm text-zinc-300 hover:text-white">Sign In</button>
+        <button onclick="switchView('auth', 'signup')" class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 font-medium rounded-xl text-white shadow-lg transition">Sign Up</button>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <!-- Main View Area -->
-  <main class="flex-1 flex flex-col items-center justify-center relative overflow-y-auto px-4" id="main-container">
-    
-    <!-- Hero Center Screen (Home) -->
-    <div id="hero-view" class="w-full max-w-2xl flex flex-col items-center text-center space-y-6 my-auto pt-12">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 text-xs text-gray-600 bg-white/80 border border-gray-200/80 rounded-full shadow-2xs">
-        <span class="text-blue-500">✨</span>
-        <span>Bluebex-V4.1-Flash Public Release</span>
+    <!-- Center Hero -->
+    <main class="flex-1 flex flex-col items-center justify-center px-4 max-w-3xl mx-auto text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs text-blue-400 mb-6">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> The official DeepSeek-v4.1 model is now live
       </div>
+      <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-8 text-white">Into the Unknown</h1>
 
-      <h1 class="text-5xl font-light text-gray-800 tracking-tight">
-        Into the Unknown
-      </h1>
-
-      <!-- Center Input Box -->
-      <form id="hero-chat-form" class="w-full bg-white border border-gray-200/90 rounded-3xl p-4 shadow-xl shadow-blue-900/5 transition-all focus-within:border-blue-400">
-        <textarea
-          id="hero-user-input"
-          rows="3"
-          placeholder="Ask anything, explore together..."
-          class="w-full bg-transparent border-none outline-none text-gray-800 placeholder-gray-400 text-sm resize-none"
-        ></textarea>
-
-        <div class="flex items-center justify-between pt-2">
+      <!-- Prompt Input -->
+      <div class="w-full bg-[#212126] border border-zinc-700/60 rounded-2xl p-4 shadow-2xl">
+        <textarea id="home-input" placeholder="Ask anything, explore together..." class="w-full bg-transparent border-none outline-none resize-none text-zinc-100 placeholder-zinc-500 h-24 text-base"></textarea>
+        <div class="flex items-center justify-between pt-2 border-t border-zinc-800">
           <div class="flex items-center gap-2">
-            <button type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-gray-600 bg-gray-100">
-              <i data-lucide="brain" class="w-3.5 h-3.5 text-gray-500"></i> DeepThink
+            <button id="btn-think" onclick="toggleOption('think')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600/20 text-blue-400 border border-blue-500/30">
+              <i data-lucide="brain" class="w-3.5 h-3.5"></i> DeepThink
             </button>
-            <button type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-blue-600 bg-blue-50">
-              <i data-lucide="globe" class="w-3.5 h-3.5 text-blue-500"></i> Search
+            <button id="btn-search" onclick="toggleOption('search')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-800 text-zinc-400">
+              <i data-lucide="globe" class="w-3.5 h-3.5"></i> Search
             </button>
           </div>
-          <button type="submit" class="p-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition">
+          <button onclick="startChatFromHome()" class="p-2.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-white">
             <i data-lucide="arrow-up" class="w-4 h-4"></i>
           </button>
         </div>
-      </form>
+      </div>
+    </main>
+  </div>
+
+  <!-- ================= 2. AUTHENTICATION VIEW ================= -->
+  <div id="auth-view" class="hidden h-full w-full flex">
+    <!-- Left Image Banner -->
+    <div class="hidden lg:flex w-1/2 bg-zinc-900 border-r border-zinc-800 relative overflow-hidden flex-col justify-between p-8">
+      <img src="login.png" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80'" class="absolute inset-0 w-full h-full object-cover opacity-60" alt="Login Graphic">
+      <div class="relative z-10 flex items-center gap-3">
+        <img src="logo.png" onerror="this.src='https://placehold.co/40x40/3b82f6/ffffff?text=BX'" class="w-10 h-10 rounded-lg">
+        <span class="font-bold text-2xl text-white">BlueBex AI</span>
+      </div>
+      <div class="relative z-10">
+        <h2 class="text-3xl font-bold text-white">Welcome Back</h2>
+        <p class="text-zinc-400 text-sm mt-1">Powered by DeepSeek v4.1 & Botliy API Relay</p>
+      </div>
     </div>
 
-    <!-- Chat Messages Screen -->
-    <div id="chat-feed" class="w-full max-w-2xl flex-1 flex-col space-y-6 pt-24 pb-36 hidden">
-      <div id="messages-list" class="space-y-6 w-full"></div>
+    <!-- Right Form -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-[#18181b]">
+      <div class="w-full max-w-sm space-y-6">
+        <h2 id="auth-title" class="text-3xl font-bold text-white">Sign In</h2>
+        <form onsubmit="handleAuth(event)" class="space-y-4">
+          <div>
+            <label class="text-xs text-zinc-400 font-medium block mb-1">E-mail</label>
+            <input type="email" id="auth-email" required placeholder="name@domain.com" class="w-full bg-[#212126] border border-zinc-700/80 rounded-xl px-4 py-2.5 text-white outline-none focus:border-blue-500 text-sm">
+          </div>
+          <div>
+            <label class="text-xs text-zinc-400 font-medium block mb-1">Password</label>
+            <input type="password" required placeholder="••••••••" class="w-full bg-[#212126] border border-zinc-700/80 rounded-xl px-4 py-2.5 text-white outline-none focus:border-blue-500 text-sm">
+          </div>
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-xl text-sm transition">Continue</button>
+        </form>
+      </div>
     </div>
+  </div>
 
-  </main>
-
-  <!-- Sticky Bottom Input Bar -->
-  <footer id="bottom-bar" class="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-[#f4f7fb] via-[#f4f7fb]/90 to-transparent pt-6 pb-6 px-4 flex justify-center z-40 hidden">
-    <div class="w-full max-w-2xl bg-white border border-gray-200 rounded-2xl shadow-lg p-3">
-      <form id="active-chat-form" class="flex flex-col gap-2">
-        <textarea
-          id="active-user-input"
-          rows="2"
-          placeholder="Ask anything, explore together..."
-          class="w-full bg-transparent border-none outline-none text-gray-800 placeholder-gray-400 px-2 text-sm resize-none"
-        ></textarea>
-        <div class="flex items-center justify-between pt-1 border-t border-gray-100">
-          <span class="text-xs text-gray-400 px-2">Bluebex Public AI</span>
-          <button type="submit" class="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition">
-            <i data-lucide="arrow-up" class="w-4 h-4"></i>
-          </button>
+  <!-- ================= 3. MAIN CHAT VIEW ================= -->
+  <div id="chat-view" class="hidden h-full w-full flex overflow-hidden">
+    <!-- Collapsible Sidebar -->
+    <aside id="sidebar" class="w-64 bg-[#141417] border-r border-zinc-800/80 flex flex-col justify-between p-3 flex-shrink-0 transition-all duration-300">
+      <div>
+        <div class="flex items-center justify-between mb-4 px-2 pt-1">
+          <div class="flex items-center gap-2">
+            <img src="logo.png" onerror="this.src='https://placehold.co/32x32/3b82f6/ffffff?text=BX'" class="w-7 h-7 rounded">
+            <span class="font-bold text-white text-base">BlueBex</span>
+          </div>
+          <button onclick="toggleSidebar()" class="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800"><i data-lucide="panel-left-close" class="w-4 h-4"></i></button>
         </div>
-      </form>
-    </div>
-  </footer>
 
+        <button onclick="resetChat()" class="w-full flex items-center justify-center gap-2 bg-zinc-800/80 hover:bg-zinc-700 text-zinc-200 py-2 rounded-xl text-xs font-medium transition mb-4">
+          <i data-lucide="plus" class="w-4 h-4"></i> New chat
+        </button>
+
+        <div class="text-[11px] text-zinc-500 font-semibold uppercase px-2 mb-2">History</div>
+        <div id="chat-history-list" class="space-y-1 overflow-y-auto max-h-[60vh] custom-scrollbar">
+          <div class="p-2 rounded-lg bg-zinc-800/50 text-xs text-zinc-300 truncate cursor-pointer">Discord Ticket Bot Code</div>
+        </div>
+      </div>
+
+      <!-- User Profile Dropup Anchor -->
+      <div class="border-t border-zinc-800/80 pt-3 relative">
+        <div onclick="toggleUserMenu()" class="flex items-center justify-between p-2 rounded-xl hover:bg-zinc-800/60 cursor-pointer">
+          <div class="flex items-center gap-2.5">
+            <div id="user-avatar" class="w-7 h-7 rounded-full bg-purple-600 flex items-center justify-center font-semibold text-xs text-white">U</div>
+            <span id="user-display-name" class="text-xs font-medium text-white truncate max-w-[100px]">User</span>
+          </div>
+          <i data-lucide="more-horizontal" class="w-4 h-4 text-zinc-400"></i>
+        </div>
+
+        <!-- Popup Menu -->
+        <div id="user-popup-menu" class="hidden absolute bottom-14 left-0 w-full bg-[#212126] border border-zinc-700/80 rounded-xl p-1 shadow-2xl z-20 space-y-0.5 text-xs">
+          <button onclick="openSettings('general')" class="w-full flex items-center gap-2 px-3 py-2 text-zinc-300 hover:bg-zinc-700/60 rounded-lg"><i data-lucide="settings" class="w-3.5 h-3.5"></i> Settings</button>
+          <button onclick="openSettings('profile')" class="w-full flex items-center gap-2 px-3 py-2 text-zinc-300 hover:bg-zinc-700/60 rounded-lg"><i data-lucide="user" class="w-3.5 h-3.5"></i> Profile</button>
+          <button onclick="location.reload()" class="w-full flex items-center gap-2 px-3 py-2 text-red-400 hover:bg-zinc-700/60 rounded-lg"><i data-lucide="log-out" class="w-3.5 h-3.5"></i> Log out</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 flex flex-col h-full bg-[#18181b] relative">
+      <!-- Top Navigation -->
+      <header class="h-12 border-b border-zinc-800/60 flex items-center justify-between px-4">
+        <button id="sidebar-open-btn" onclick="toggleSidebar()" class="hidden p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800"><i data-lucide="panel-left" class="w-4 h-4"></i></button>
+        <span class="text-xs font-medium text-zinc-400">Model: <strong class="text-white">deepseek-v4.1 (Botliy Relay)</strong></span>
+      </header>
+
+      <!-- Chat Messages Scroll Container -->
+      <div id="chat-messages" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 custom-scrollbar">
+        <!-- Messages render here -->
+      </div>
+
+      <!-- Bottom Textbox -->
+      <div class="p-4 max-w-3xl mx-auto w-full">
+        <div class="bg-[#212126] border border-zinc-700/80 rounded-2xl p-3 shadow-xl">
+          <textarea id="chat-input" placeholder="Message BlueBex..." class="w-full bg-transparent outline-none resize-none text-zinc-100 placeholder-zinc-500 h-16 text-sm"></textarea>
+          <div class="flex items-center justify-between pt-2 border-t border-zinc-800">
+            <div class="flex items-center gap-2">
+              <label class="p-1.5 text-zinc-400 hover:text-white cursor-pointer hover:bg-zinc-800 rounded-lg">
+                <i data-lucide="paperclip" class="w-4 h-4"></i>
+                <input type="file" id="file-upload" onchange="handleFileUpload(event)" class="hidden">
+              </label>
+              <span id="file-indicator" class="text-xs text-blue-400 hidden"></span>
+            </div>
+            <button onclick="sendChatMessage()" class="p-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl">
+              <i data-lucide="arrow-up" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ================= 4. SETTINGS MODAL ================= -->
+  <div id="settings-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-[#212126] border border-zinc-700/80 w-full max-w-xl rounded-2xl flex overflow-hidden shadow-2xl h-[400px]">
+      <div class="w-40 bg-[#18181b] p-3 border-r border-zinc-800 space-y-1">
+        <button onclick="switchSettingsTab('general')" class="w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-white bg-zinc-800">General</button>
+        <button onclick="switchSettingsTab('profile')" class="w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-zinc-400">Profile</button>
+      </div>
+      <div class="flex-1 p-6 relative">
+        <button onclick="closeSettings()" class="absolute top-4 right-4 text-zinc-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+        <div id="tab-general">
+          <h3 class="text-sm font-bold text-white mb-4">General Settings</h3>
+          <p class="text-xs text-zinc-400 mb-2">Relay API Endpoint:</p>
+          <input type="text" readonly value="https://botliy.online/api/v1/chat/completions" class="w-full bg-zinc-900 border border-zinc-700/60 rounded-xl px-3 py-2 text-xs text-zinc-400 outline-none">
+        </div>
+        <div id="tab-profile" class="hidden">
+          <h3 class="text-sm font-bold text-white mb-4">Account Profile</h3>
+          <p class="text-xs text-zinc-400">Log out or clear cache.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client Scripting -->
   <script>
     lucide.createIcons();
 
-    const heroView = document.getElementById('hero-view');
-    const chatFeed = document.getElementById('chat-feed');
-    const messagesList = document.getElementById('messages-list');
-    const bottomBar = document.getElementById('bottom-bar');
-    const mainContainer = document.getElementById('main-container');
+    let user = null;
+    let messages = [];
+    let isThinkEnabled = true;
 
-    const heroForm = document.getElementById('hero-chat-form');
-    const heroInput = document.getElementById('hero-user-input');
+    function switchView(viewName, mode) {
+      document.getElementById('home-view').classList.add('hidden');
+      document.getElementById('auth-view').classList.add('hidden');
+      document.getElementById('chat-view').classList.add('hidden');
 
-    const activeForm = document.getElementById('active-chat-form');
-    const activeInput = document.getElementById('active-user-input');
-
-    let history = [];
-
-    heroForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const text = heroInput.value.trim();
-      if (!text) return;
-
-      heroView.classList.add('hidden');
-      chatFeed.classList.remove('hidden');
-      chatFeed.classList.add('flex');
-      bottomBar.classList.remove('hidden');
-
-      sendMessage(text);
-    });
-
-    activeForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const text = activeInput.value.trim();
-      if (!text) return;
-      activeInput.value = '';
-      sendMessage(text);
-    });
-
-    async function sendMessage(text) {
-      appendMessage('user', text);
-      history.push({ role: 'user', content: text });
-
-      const loadingId = appendLoading();
-      mainContainer.scrollTop = mainContainer.scrollHeight;
-
-      try {
-        const res = await fetch('/api', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: history })
-        });
-
-        const data = await res.json();
-        document.getElementById(loadingId)?.remove();
-
-        if (res.ok && data.reply) {
-          appendMessage('assistant', data.reply);
-          history.push({ role: 'assistant', content: data.reply });
-        } else {
-          appendMessage('assistant', `⚠️ **Error:** ${data.error || 'Check Vercel Environment Variables.'}`);
-        }
-      } catch (err) {
-        document.getElementById(loadingId)?.remove();
-        appendMessage('assistant', '⚠️ **Network Error:** Could not reach backend function `/api`.');
+      if (viewName === 'auth') {
+        document.getElementById('auth-view').classList.remove('hidden');
+        document.getElementById('auth-title').innerText = mode === 'signup' ? 'Sign Up' : 'Sign In';
+      } else if (viewName === 'chat') {
+        document.getElementById('chat-view').classList.remove('hidden');
+      } else {
+        document.getElementById('home-view').classList.remove('hidden');
       }
-
-      mainContainer.scrollTop = mainContainer.scrollHeight;
     }
 
-    function appendMessage(role, text) {
-      const msgDiv = document.createElement('div');
-      msgDiv.className = 'w-full flex ' + (role === 'user' ? 'justify-end' : 'justify-start');
+    function toggleOption(opt) {
+      if (opt === 'think') {
+        isThinkEnabled = !isThinkEnabled;
+        document.getElementById('btn-think').className = isThinkEnabled 
+          ? "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600/20 text-blue-400 border border-blue-500/30"
+          : "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-800 text-zinc-400";
+      }
+    }
 
-      if (role === 'user') {
-        msgDiv.innerHTML = `
-          <div class="bg-blue-600 text-white px-4 py-2.5 rounded-2xl max-w-[85%] text-sm leading-relaxed whitespace-pre-wrap shadow-sm">
-            ${escapeHtml(text)}
-          </div>
-        `;
-      } else {
-        msgDiv.innerHTML = `
-          <div class="flex gap-3 w-full">
-            <div class="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center shrink-0 mt-0.5 text-white font-extrabold text-xs shadow-xs">
-              B
-            </div>
-            <div class="flex-1 text-gray-800 text-sm leading-relaxed prose max-w-none pt-0.5">
-              ${marked.parse(text)}
-            </div>
-          </div>
-        `;
+    function handleAuth(e) {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value;
+      const name = email.split('@')[0];
+      user = { email, name };
+      document.getElementById('user-display-name').innerText = name;
+      document.getElementById('user-avatar').innerText = name[0].toUpperCase();
+      switchView('chat');
+    }
+
+    function startChatFromHome() {
+      const text = document.getElementById('home-input').value;
+      if (!user) {
+        switchView('auth', 'signin');
+        return;
+      }
+      switchView('chat');
+      if (text.trim()) {
+        sendChatMessage(text);
+      }
+    }
+
+    async function sendChatMessage(customText) {
+      const inputEl = document.getElementById('chat-input');
+      const text = customText || inputEl.value;
+      if (!text.trim()) return;
+
+      messages.push({ role: 'user', content: text });
+      if (!customText) inputEl.value = '';
+
+      renderMessages();
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages })
+        });
+        const data = await res.json();
+
+        if (data.choices && data.choices[0]?.message) {
+          messages.push(data.choices[0].message);
+        } else if (data.error) {
+          messages.push({ role: 'assistant', content: `❌ API Error: ${data.error}` });
+        }
+      } catch (err) {
+        messages.push({ role: 'assistant', content: `❌ Request Failed: ${err.message}` });
       }
 
-      messagesList.appendChild(msgDiv);
+      renderMessages();
+    }
+
+    function renderMessages() {
+      const container = document.getElementById('chat-messages');
+      container.innerHTML = messages.map((m, idx) => {
+        const isUser = m.role === 'user';
+        let contentHtml = m.content;
+
+        // Code block detector with direct download
+        if (m.content.includes('```')) {
+          const parts = m.content.split('```');
+          contentHtml = parts.map((part, i) => {
+            if (i % 2 === 1) {
+              const lines = part.trim().split('\n');
+              const lang = lines[0] || 'code';
+              const code = lines.slice(1).join('\n');
+              const escapedCode = code.replace(/"/g, '&quot;');
+              return `
+                <div class="my-3 rounded-xl border border-zinc-700 bg-[#121215] overflow-hidden">
+                  <div class="flex items-center justify-between px-4 py-2 bg-zinc-800/80 text-xs text-zinc-400">
+                    <span>${lang}</span>
+                    <button onclick="downloadCode('file.${lang}', \`${escapedCode}\`)" class="flex items-center gap-1 hover:text-white text-blue-400">Download</button>
+                  </div>
+                  <pre class="p-4 text-xs font-mono overflow-x-auto text-blue-300"><code>${code}</code></pre>
+                </div>
+              `;
+            }
+            return `<p class="whitespace-pre-wrap">${part}</p>`;
+          }).join('');
+        } else {
+          contentHtml = `<p class="whitespace-pre-wrap">${m.content}</p>`;
+        }
+
+        return `
+          <div class="flex gap-3 max-w-3xl mx-auto ${isUser ? 'justify-end' : 'justify-start'}">
+            ${!isUser ? `<div class="w-7 h-7 rounded bg-blue-600 flex items-center justify-center text-white flex-shrink-0 text-xs">AI</div>` : ''}
+            <div class="p-3.5 rounded-2xl text-sm ${isUser ? 'bg-blue-600 text-white' : 'bg-[#212126] text-zinc-200 border border-zinc-800'}">
+              ${contentHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+      container.scrollTop = container.scrollHeight;
       lucide.createIcons();
     }
 
-    function appendLoading() {
-      const id = 'loading-' + Date.now();
-      const div = document.createElement('div');
-      div.id = id;
-      div.className = 'w-full flex justify-start';
-      div.innerHTML = `
-        <div class="flex gap-3 w-full">
-          <div class="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center shrink-0 mt-0.5 text-white font-bold text-xs animate-pulse">
-            B
-          </div>
-          <div class="flex flex-col gap-1.5 pt-2 w-32 animate-pulse">
-            <div class="h-2 bg-gray-200 rounded-full w-full"></div>
-            <div class="h-2 bg-gray-200 rounded-full w-2/3"></div>
-          </div>
-        </div>
-      `;
-      messagesList.appendChild(div);
-      return id;
+    function downloadCode(filename, content) {
+      const element = document.createElement('a');
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+      element.setAttribute('download', filename);
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
     }
 
-    function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const openBtn = document.getElementById('sidebar-open-btn');
+      sidebar.classList.toggle('hidden');
+      openBtn.classList.toggle('hidden');
+    }
+
+    function toggleUserMenu() {
+      document.getElementById('user-popup-menu').classList.toggle('hidden');
+    }
+
+    function openSettings(tab) {
+      document.getElementById('settings-modal').classList.remove('hidden');
+      document.getElementById('user-popup-menu').classList.add('hidden');
+    }
+
+    function closeSettings() {
+      document.getElementById('settings-modal').classList.add('hidden');
+    }
+
+    function resetChat() {
+      messages = [];
+      renderMessages();
+    }
+
+    function handleFileUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        document.getElementById('file-indicator').innerText = `Attached: ${file.name}`;
+        document.getElementById('file-indicator').classList.remove('hidden');
+      }
     }
   </script>
 </body>

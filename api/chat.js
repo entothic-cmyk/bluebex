@@ -4,37 +4,28 @@ export default async function handler(req, res) {
   }
 
   const { messages } = req.body;
-  const apiKey = process.env.DEEPSEEK_API_KEY;
+  const apiKey = process.env.BOTLIY_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json({ error: 'Missing DEEPSEEK_API_KEY in Vercel Environment Variables.' });
+    return res.status(500).json({ error: 'BOTLIY_API_KEY environment variable is not set.' });
   }
 
   try {
-    const apiResponse = await fetch('https://api.deepseek.com/chat/completions', {
+    const response = await fetch('https://botliy.online/api/v1/chat/completions', {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: messages
+        model: 'deepseek-v4.1',
+        messages: messages || []
       })
     });
 
-    const data = await apiResponse.json();
-
-    if (!apiResponse.ok) {
-      return res.status(apiResponse.status).json({ 
-        error: data.error?.message || `API Error: ${apiResponse.status}` 
-      });
-    }
-
-    const reply = data.choices[0].message.content;
-    return res.status(200).json({ reply });
-
+    const data = await response.json();
+    return res.status(response.status).json(data);
   } catch (error) {
-    return res.status(500).json({ error: 'Server communication error.' });
+    return res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 }
