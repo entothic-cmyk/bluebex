@@ -1,33 +1,29 @@
 lucide.createIcons();
 
 const chatContainer = document.getElementById('chat-container');
-const header = document.getElementById('main-header');
 const form = document.getElementById('chat-form');
 const input = document.getElementById('user-input');
 const fileUpload = document.getElementById('file-upload');
 const messagesContainer = document.getElementById('messages');
 const welcomeScreen = document.getElementById('welcome-screen');
-const mainFooter = document.getElementById('main-footer');
+const authLink = document.getElementById('auth-link');
 
-// 1. Shrinking Header on Scroll
-chatContainer.addEventListener('scroll', () => {
-  if (chatContainer.scrollTop > 40) {
-    header.classList.add('shrunk');
-  } else {
-    header.classList.remove('shrunk');
-  }
-});
+// 1. Check Login Status
+const isLoggedIn = localStorage.getItem('bluebex_logged_in') === 'true';
 
-// 2. Chat History & Memory Initialization
+if (isLoggedIn) {
+  authLink.textContent = 'Profile';
+  authLink.href = '#';
+}
+
+// 2. Chat History Configuration
 let chatHistory = JSON.parse(localStorage.getItem('bluebex_history')) || [
-  { role: 'system', content: 'You are Bluebex AI, an expert coding and reasoning AI assistant.' }
+  { role: 'system', content: 'You are Bluebex AI, powered by DeepSeek V4.1 Flash.' }
 ];
 
 window.addEventListener('DOMContentLoaded', () => {
   if (chatHistory.length > 1) {
     if (welcomeScreen) welcomeScreen.style.display = 'none';
-    if (mainFooter) mainFooter.style.display = 'none';
-    
     chatHistory.forEach(msg => {
       if (msg.role !== 'system') appendMessage(msg.role, msg.content);
     });
@@ -35,69 +31,34 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// 3. File Reader Handling
+// 3. File Reader (Requires Login)
 let attachedFileContent = "";
 fileUpload.addEventListener('change', (e) => {
+  if (!isLoggedIn) {
+    window.location.href = 'login.html';
+    return;
+  }
+  
   const file = e.target.files[0];
   if (!file) return;
 
   const reader = new FileReader();
   reader.onload = (evt) => {
-    attachedFileContent = `\n\n[Attached File Content: ${file.name}]\n\`\`\`\n${evt.target.result}\n\`\`\``;
+    attachedFileContent = `\n\n[Attached File: ${file.name}]\n\`\`\`\n${evt.target.result}\n\`\`\``;
     input.value += ` [Attached: ${file.name}]`;
   };
   reader.readAsText(file);
 });
 
-// 4. Custom Code Block Parser with Copy & Download
-const renderer = new marked.Renderer();
-renderer.code = function(code, language) {
-  const id = 'code-' + Math.random().toString(36).substr(2, 9);
-  const lang = language || 'code';
-  const ext = lang.split(' ')[0] || 'txt';
-  
-  // Escape HTML entities inside code block
-  const safeCode = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
-  return `
-    <div class="code-block-wrapper">
-      <div class="code-header">
-        <span>${lang}</span>
-        <div class="flex gap-3">
-          <button onclick="copyCode('${id}')" class="hover:text-white transition flex items-center gap-1">
-            <i data-lucide="copy" class="w-3 h-3"></i> Copy
-          </button>
-          <button onclick="downloadCode('${id}', 'bluebex-code.${ext}')" class="hover:text-white transition flex items-center gap-1">
-            <i data-lucide="download" class="w-3 h-3"></i> Download
-          </button>
-        </div>
-      </div>
-      <pre class="code-content"><code id="${id}">${safeCode}</code></pre>
-    </div>
-  `;
-};
-marked.use({ renderer });
-
-// Global Copy & Download Functions
-window.copyCode = function(id) {
-  const text = document.getElementById(id).innerText;
-  navigator.clipboard.writeText(text).then(() => alert('Code copied to clipboard!'));
-};
-
-window.downloadCode = function(id, filename) {
-  const text = document.getElementById(id).innerText;
-  const blob = new Blob([text], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-};
-
-// 5. Submit Form & Fetch Stream Response
+// 4. Handle Chat Submission
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
+  
+  if (!isLoggedIn) {
+    window.location.href = 'login.html';
+    return;
+  }
+
   let textPrompt = input.value.trim();
   if (!textPrompt && !attachedFileContent) return;
 
@@ -108,7 +69,6 @@ form.addEventListener('submit', async (e) => {
   }
 
   if (welcomeScreen) welcomeScreen.style.display = 'none';
-  if (mainFooter) mainFooter.style.display = 'none';
 
   appendMessage('user', textPrompt);
   input.value = '';
@@ -129,43 +89,55 @@ form.addEventListener('submit', async (e) => {
     const data = await response.json();
     document.getElementById(loadingId).remove();
 
-    if (data.reply) {
+    if (response.ok && data.reply) {
       appendMessage('assistant', data.reply);
       chatHistory.push({ role: 'assistant', content: data.reply });
       localStorage.setItem('bluebex_history', JSON.stringify(chatHistory));
     } else {
-      appendMessage('assistant', 'Error: Could not retrieve response from API.');
+      appendMessage('assistant', `API Error: ${data.error || 'Check Vercel API Key in Dashboard.'}`);
     }
   } catch (err) {
     document.getElementById(loadingId).remove();
-    appendMessage('assistant', 'Error connecting to the Bluebex AI backend.');
+    appendMessage('assistant', 'Network Error: Check console or Vercel logs.');
   }
 
   chatContainer.scrollTop = chatContainer.scrollHeight;
 });
 
+// 5. Beautiful Chat Bubble Renderer
+const renderer = new marked.Renderer();
+marked.use({ renderer });
+
 function appendMessage(role, text) {
   const msgDiv = document.createElement('div');
-  msgDiv.className = 'flex gap-4 items-start ' + (role === 'user' ? 'justify-end' : '');
+  msgDiv.className = 'w-full flex ' + (role === 'user' ? 'justify-end' : 'justify-start');
+  
+  let displayText = text;
+  if (role === 'user' && text.includes('[Attached File:')) {
+    displayText = text.split('[Attached File:')[0] + "\n\n*(File attached)*";
+  }
 
   if (role === 'user') {
+    // User Chat Bubble (Gray Pill)
     msgDiv.innerHTML = `
-      <div class="bg-blue-600 text-white px-5 py-3 rounded-2xl max-w-[80%] shadow-sm leading-relaxed whitespace-pre-wrap">
-        ${escapeHtml(text)}
+      <div class="bg-[#f4f6f8] text-gray-800 px-5 py-3 rounded-3xl max-w-[80%] text-[15px] leading-relaxed whitespace-pre-wrap font-medium">
+        ${escapeHtml(displayText.trim())}
       </div>
     `;
   } else {
-    const parsedHTML = marked.parse(text);
+    // AI Chat Bubble (Transparent with Sparkle Icon)
     msgDiv.innerHTML = `
-      <div class="p-2 rounded-full shrink-0 bg-blue-600 text-white mt-1 shadow-sm">
-        <i data-lucide="sparkles" class="w-4 h-4"></i>
-      </div>
-      <div class="flex-1 pt-1 text-gray-800 leading-relaxed max-w-none space-y-3">
-        ${parsedHTML}
+      <div class="flex gap-4 w-full">
+        <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shrink-0 mt-1 shadow-sm">
+          <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+        </div>
+        <div class="flex-1 text-gray-800 text-[15px] leading-loose prose prose-blue max-w-none">
+          ${marked.parse(text)}
+        </div>
       </div>
     `;
   }
-
+  
   messagesContainer.appendChild(msgDiv);
   lucide.createIcons();
 }
@@ -174,12 +146,17 @@ function appendLoading() {
   const id = 'loading-' + Date.now();
   const div = document.createElement('div');
   div.id = id;
-  div.className = 'flex gap-4 items-center mt-4';
+  div.className = 'w-full flex justify-start';
   div.innerHTML = `
-    <div class="p-2 rounded-full bg-blue-600 text-white animate-pulse">
-      <i data-lucide="sparkles" class="w-4 h-4"></i>
+    <div class="flex gap-4 w-full">
+      <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shrink-0 mt-1 shadow-sm animate-pulse">
+        <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+      </div>
+      <div class="flex flex-col gap-2 pt-3 w-48 animate-pulse">
+        <div class="h-2 bg-gray-200 rounded-full w-full"></div>
+        <div class="h-2 bg-gray-200 rounded-full w-2/3"></div>
+      </div>
     </div>
-    <span class="text-sm text-gray-400 animate-pulse">Bluebex AI is thinking...</span>
   `;
   messagesContainer.appendChild(div);
   return id;

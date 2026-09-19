@@ -4,9 +4,10 @@ export default async function handler(req, res) {
   }
 
   const { messages } = req.body;
+  const apiKey = process.env.DEEPSEEK_API_KEY;
 
-  if (!messages || !Array.isArray(messages)) {
-    return res.status(400).json({ error: 'Messages array is required' });
+  if (!apiKey) {
+    return res.status(500).json({ error: 'Missing DEEPSEEK_API_KEY in Vercel Environment Variables.' });
   }
 
   try {
@@ -14,7 +15,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
+        'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
         model: 'deepseek-chat',
@@ -25,13 +26,15 @@ export default async function handler(req, res) {
     const data = await apiResponse.json();
 
     if (!apiResponse.ok) {
-      return res.status(apiResponse.status).json({ error: data.error || 'DeepSeek API Error' });
+      return res.status(apiResponse.status).json({ 
+        error: data.error?.message || `API Error: ${apiResponse.status}` 
+      });
     }
 
     const reply = data.choices[0].message.content;
     return res.status(200).json({ reply });
 
   } catch (error) {
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: 'Server connection failed.' });
   }
 }
